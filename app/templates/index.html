@@ -9,16 +9,54 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
 <body>
-    <header>
-        <h2>CeneoWebScraper</h2>
-    </header>
-    <!-- navbar -->   
-    <div>
-        <p>{{text}}</p>
-    </div>
-    <!-- dwie kolumny 4 : 8 -->
-    <footer>
-        <p>&copy; Andrzej Maziarz Uniwersytet Ekonomiczny w Krakowie</p>
+    <main class="container">
+        <div class="navbar sticky-top">
+            <a class="navbar-brand" href="#">
+                <h3>
+                    <img src="{{url_for('static', filename='ceneo.png')}}" width="30" height="30" class="d-inline-block align-top" alt="ceneo">
+                    CeneoWebScraper
+                    <small class="text-muted">projekt obiektowy z framework'iem</small>
+                </h3>
+            </a>            
+        </div>
+        <!-- navbar -->   
+        <div class="row">
+            <div class="col-8 bg-light rounded p-3" style="height: 450px; margin-right: 1em">
+                <p class="lead"> Aplikacja webowa służy do
+                    pobierania z serwisu Ceneo.pl opinii o produktach na podstawie ich indywidualnych kodów
+                    oraz do wyświetlenia pobranych opinii i podstawowych statystyk o nich</p>
+                
+                <blockquote class="blockquote">
+                    <p>Już końcówka semestru, a ja dalej nie wiem jak się commituje na gita</p>
+                    <footer class="blockquote-footer">Jeden ze studentów <cite title="Source Title">Informatyki Stosowanej</cite></footer>
+                </blockquote>
+            </div>
+            <div class="col-3 bg-light rounded p-3" style="height: 450px" >
+                <p>Dla każdej opinii aplikacja pobiera:</p>
+                <ul>
+                    <li>identyfikator opinii</li>
+                    <li>autora</li>
+                    <li>rekomendację</li>
+                    <li>liczbę gwiazdek</li>
+                    <li>czy opinia jest potwierdzona zakupem</li>
+                    <li>datę wystawienia opinii</li>
+                    <li>datę zakupu produktu</li>
+                    <li>ile osób uznało opinię za przydatną</li>
+                    <li>ile osób uznało opinię za nieprzydatną</li>
+                    <li>treść opinii</li>
+                    <li>listę wad</li>
+                    <li>listę zalet</li>
+                </ul>
+                
+            </div>
+        </div>
+        <!-- dwie kolumny 4 : 8 -->
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">&copy; Andrzej Maziarz Uniwersytet Ekonomiczny w Krakowie</p>
+        </div>
     </footer>
+    
 </body>
 </html>
