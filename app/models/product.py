@@ -7,16 +7,17 @@ from app.models.opinion import Opinion
 from bs4 import BeautifulSoup
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, rc_params_from_file
 
 class Product():
-    def __init__(self, product_id, product_name, price, description, opinions=[], opinions_count=0):
+    def __init__(self, product_id, product_name="", opinions=[], opinions_count=0, pros_count=0, cons_count=0, average_score=0):
         self.product_name=product_name
         self.product_id=product_id
-        self.price=price
-        self.description=description
         self.opinions=opinions
         self.opinions_count=opinions_count
+        self.pros_count=pros_count
+        self.cons_count=cons_count
+        self.average_score=average_score
         return self
 
     def extract_name(self):
@@ -92,16 +93,16 @@ class Product():
         return self
     
     def __str__(self) -> str:
-        #homework, czyli zrzutowanie obiektu do stringa
-        pass
+        return f"product_id : {self.product_id}<br>opinions<br><br>"+"<br><br>".join(str(opinion) for opinion in self.opinions)
 
     def __repr__(self) -> str:
-        #homework, konstruktor kopiujący, reprodukcja , wywołanie konstruktora z wartościami bieżącego obiektu
-        pass
+        return f"Product(product_id={self.product_id}, opinions = [" + ",".join(opinion.__repr___() for opinion in self.opinions +")]"
 
     def to_dict(self) -> dict:
-        #homework, zwracanie słownika
-        pass
+        return {
+            "product_id" : self.product_id,
+            "opinions" : [opinion.to_dict() for opinion in self.opinions]
+        }
 
     def export_opinions(self):
         if not os.path.exists("app/opinions"):
