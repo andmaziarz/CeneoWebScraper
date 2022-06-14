@@ -17,8 +17,11 @@ def extract():
 
         if product.product_name:
             product.extract_opinions().calculate_stats().draw_charts()
+            product.export_product()
+            product.export_opinions()
         else:
-            pass
+            error = "Ups... coś poszło nie tak"
+            return render_template("extract.html.jinja", error=error)
         
         return redirect(url_for('product', product_id=product_id))
     else:
@@ -35,5 +38,8 @@ def author():
 
 @app.route('/product/<product_id>')
 def product(product_id):
-
-    return render_template("product.html.jinja", product_id=product_id, stats=stats, opinion=opinions)
+    product = Product(product_id)
+    product.import_product()
+    stats = product.stats_to_dict()
+    opinions = product.opinions_to_df()
+    return render_template("product.html.jinja", product_id=product_id, stats=stats, opinions=opinions)

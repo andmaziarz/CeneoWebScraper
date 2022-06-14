@@ -1,4 +1,4 @@
-from app import parameters
+from app.parameters import selectors
 from app.utils import get_item
 
 class Opinion():
@@ -14,7 +14,6 @@ class Opinion():
         self.useless=useless
         self.published_date=published_date
         self.purchased_date=purchased_date
-        return self
     
     def extract_opinion(self, opinion):
         for key, value in selectors.items():

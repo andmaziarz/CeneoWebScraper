@@ -18,7 +18,6 @@ class Product():
         self.pros_count=pros_count
         self.cons_count=cons_count
         self.average_score=average_score
-        return self
 
     def extract_name(self):
         url = f"https://www.ceneo.pl/{self.product_id}#tab=reviews"
@@ -45,25 +44,25 @@ class Product():
         return self
 
     def opinions_to_df(self):
-        return pd.read_json(json.dumps([opinion.to_dict() for opinion in self.opinions]))
+        opinions = pd.read_json(json.dumps([opinion.to_dict() for opinion in self.opinions]))
+        opinions["stars"] = opinions["stars"].map(lambda x: float(x.split("/")[0].replace(",", ".")))
+        return opinions
 
     def calculate_stats(self):
 
-        self.opinions_to_df()
-        opinions["stars"] = opinions["stars"].map(lambda x: float(x.split("/")[0].replace(",", ".")))
-
+        opinions = self.opinions_to_df()
         self.opinions_count = len(opinions)
-        self.pros_count = opinions["pros"].map(bool).sum()
-        self.cons_count = opinions["cons"].map(bool).sum()
+        self.pros_count = int(opinions["pros"].map(bool).sum())
+        self.cons_count = int(opinions["cons"].map(bool).sum())
         self.average_score = opinions["stars"].mean().round(2)
 
         return self
 
     def draw_charts(self):
-        self.opinions_to_df()
+        opinions = self.opinions_to_df()
 
-        if not os.path.exists("app/plots"):
-            os.mkdir("app/plots")
+        if not os.path.exists("app/static/plots"):
+            os.mkdir("app/static/plots")
 
         recommendation = opinions["recommendation"].value_counts(dropna=False).sort_index().reindex(["Nie polecam", "Polecam", None], fill_value=0)
         recommendation.plot.pie(
@@ -116,14 +115,46 @@ class Product():
             "opinions": [opinion.to_dict() for opinion in self.opinions]
         }      
 
+    def stats_to_dict(self):
+        return {
+            "product_id": self.product_id,
+            "product_name": self.product_name,
+            "opinions_count": self.opinions_count,
+            "pros_count": self.pros_count,
+            "cons_count": self.cons_count,
+            "average_score": self.average_score
+        } 
+
+    def opinions_to_dict(self):
+        return [opinion.to_dict() for opinion in self.opinions]
+
     def export_opinions(self):
         if not os.path.exists("app/opinions"):
             os.mkdir("app/opinions")
-        
+
         with open(f"app/opinions/{self.product_id}.json", "w", encoding="UTF-8") as jf:
-            json.dump([opinion.to_dict() for opinion in self.opinions], jf, indent=4, ensure_ascii=False)
-            
-        pass
+            json.dump(self.opinions_to_dict(), jf, indent=4, ensure_ascii=False)    
 
     def export_product(self):
-        pass
+        if not os.path.exists("app/products"):
+            os.mkdir("app/products")
+        
+        with open(f"app/products/{self.product_id}.json", "w", encoding="UTF-8") as jf:
+            json.dump(self.stats_to_dict(), jf, indent=4, ensure_ascii=False)
+
+    def import_product(self):
+        if os.path.exists(f"app/products/{self.product_id}.json"):
+            with open(f"app/products/{self.product_id}.json", "w", encoding="UTF-8") as jf:
+                product = json.load(jf)
+                self.product_name= product["product_name"]
+                self.product_id=product["product_id"]
+                self.opinions=product["opinions"]
+                self.opinions_count=product["opinions_count"]
+                self.pros_count=product["pros_count"]
+                self.cons_count=product["cons_count"]
+                self.average_score=product["average_score"]
+            with open(f"app/opinions/{self.product_id}.json", "w", encoding="UTF-8") as jf:
+                opinions = json.load(jf)
+                for opinion in opinions:
+                    self.opinions.append(Opinion(**opinion))
+        
