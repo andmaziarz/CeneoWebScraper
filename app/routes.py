@@ -8,21 +8,19 @@ from app.models.product import Product
 def index():
     return render_template("index.html.jinja")
 
-@app.route('/extract', methods=["GET","POST"])
+@app.route('/extract', methods=["POST", "GET"])
 def extract():
     if request.method == "POST":
         product_id = request.form.get("product_id")
         product = Product(product_id)
         product.extract_name()
-
         if product.product_name:
             product.extract_opinions().calculate_stats().draw_charts()
-            product.export_product()
             product.export_opinions()
+            product.export_product()
         else:
             error = "Ups... coś poszło nie tak"
             return render_template("extract.html.jinja", error=error)
-        
         return redirect(url_for('product', product_id=product_id))
     else:
         return render_template("extract.html.jinja")
@@ -43,3 +41,4 @@ def product(product_id):
     stats = product.stats_to_dict()
     opinions = product.opinions_to_df()
     return render_template("product.html.jinja", product_id=product_id, stats=stats, opinions=opinions)
+    
