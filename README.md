@@ -3,7 +3,6 @@
 &nbsp;  
 ## Struktura opinii w serwisie [Ceneo.pl](https://www.ceneo.pl/)
 
-
 |Składowa opinii|Selektor|Nazwa zmiennej|Typ danych|
 |---------------|--------|--------------|----------|
 |opinia|div.js_product-review|opinion|bs4.element.Tag|
