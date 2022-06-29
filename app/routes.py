@@ -3,10 +3,14 @@ from flask import render_template, redirect, url_for, request
 import json
 import os
 from app.models.product import Product
+import markdown
 
 @app.route('/')
 def index():
-    return render_template("index.html.jinja")
+    with open('README.md', 'r', encoding="utf-8") as f:
+        readme = f.read()
+        html = markdown.markdown(readme, extensions=['fenced_code', 'codehilite','toc','markdown.extensions.tables'])
+        return render_template("index.html.jinja", html=html)
 
 @app.route('/extract', methods=["POST", "GET"])
 def extract():
